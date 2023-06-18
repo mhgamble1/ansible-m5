@@ -84,19 +84,6 @@
         purge_rules_egress: false
       register: ansible_ig_postgres_security_group
 
-    # - name: Allow outbound connections from ansible-ig-postgres to ansible-ig-postgres-tag
-    #   amazon.aws.ec2_group:
-    #     name: ansible-ig-postgres
-    #     description: allow postgres connections
-    #     vpc_id: "{{ vpc.vpc.id }}"
-    #     region: us-east-1
-    #     rules_egress:
-    #       - proto: tcp
-    #         ports: 5432
-    #         group_name: ansible-ig-postgres-tag
-    #     purge_rules_egress: false
-    #   register: ansible_ig_postgres_security_group
-
     - name: Allow inbound connections from ansible-ig-postgres-tag to ansible-ig-postgres
       amazon.aws.ec2_group:
         name: ansible-ig-postgres-tag
@@ -114,16 +101,3 @@
             group_name: ansible-ig-postgres
         purge_rules_egress: false
       register: ansible_ig_postgres_tag_security_group
-
-    # - name: Allow outbound connections from ansible-ig-postgres-tag to ansible-ig-postgres
-    #   amazon.aws.ec2_group:
-    #     name: ansible-ig-postgres-tag
-    #     description: allow postgres connections
-    #     vpc_id: "{{ vpc.vpc.id }}"
-    #     region: us-east-1
-    #     rules_egress:
-    #       - proto: tcp
-    #         ports: 5432
-    #         group_name: ansible-ig-postgres
-    #     purge_rules_egress: false
-    #   register: ansible_ig_postgres_tag_security_group
