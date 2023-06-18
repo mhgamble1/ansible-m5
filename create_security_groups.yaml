@@ -1,0 +1,129 @@
+---
+- name: Create Security Group
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: Create nginx-servers security group
+      amazon.aws.ec2_security_group:
+        name: ansible-nginx-servers
+        description: nginx load balancer servers
+        vpc_id: "{{ vpc.vpc.id }}"
+        region: us-east-1
+        rules:
+          - proto: tcp
+            ports:
+              - 80
+              - 443
+            cidr_ip:
+              - 24.154.79.0/24
+              - 71.45.64.39/32
+          - proto: tcp
+            ports:
+              - 22
+            cidr_ip:
+              - 0.0.0.0/0
+        rules_egress:
+          - proto: all
+            cidr_ip: 0.0.0.0/0
+      register: ansible_nginx_servers_security_group
+
+    - name: Create ig-postgres security group
+      amazon.aws.ec2_security_group:
+        name: ansible-ig-postgres
+        description: allow postgres connections
+        vpc_id: "{{ vpc.vpc.id }}"
+        region: us-east-1
+        rules_egress:
+          - proto: all
+            cidr_ip: 0.0.0.0/0
+      register: ansible_ig_postgres_security_group
+
+    - name: Create ig-postgres-tag security group
+      amazon.aws.ec2_security_group:
+        name: ansible-ig-postgres-tag
+        description: allow postgres connections
+        vpc_id: "{{ vpc.vpc.id }}"
+        region: us-east-1
+        rules_egress:
+          - proto: all
+            cidr_ip: 0.0.0.0/0
+      register: ansible_ig_postgres_tag
+
+    - name: Create ig-nlb-sg security group
+      amazon.aws.ec2_security_group:
+        name: ansible-ig-nlb-sg
+        description: security group for nlb
+        vpc_id: "{{ vpc.vpc.id }}"
+        region: us-east-1
+        rules:
+          - proto: all
+            cidr_ip:
+              - 24.154.79.0/24
+              - 71.45.64.39/32
+        rules_egress:
+          - proto: all
+            cidr_ip: 0.0.0.0/0
+      register: ansible_ig_nlb_sg
+
+    - name: Allow inbound connections from ansible-ig-postgres to ansible-ig-postgres-tag
+      amazon.aws.ec2_group:
+        name: ansible-ig-postgres
+        description: allow postgres connections
+        vpc_id: "{{ vpc.vpc.id }}"
+        region: us-east-1
+        rules:
+          - proto: tcp
+            ports: 5432
+            group_name: ansible-ig-postgres-tag
+        purge_rules: false
+        rules_egress:
+          - proto: tcp
+            ports: 5432
+            group_name: ansible-ig-postgres-tag
+        purge_rules_egress: false
+      register: ansible_ig_postgres_security_group
+
+    # - name: Allow outbound connections from ansible-ig-postgres to ansible-ig-postgres-tag
+    #   amazon.aws.ec2_group:
+    #     name: ansible-ig-postgres
+    #     description: allow postgres connections
+    #     vpc_id: "{{ vpc.vpc.id }}"
+    #     region: us-east-1
+    #     rules_egress:
+    #       - proto: tcp
+    #         ports: 5432
+    #         group_name: ansible-ig-postgres-tag
+    #     purge_rules_egress: false
+    #   register: ansible_ig_postgres_security_group
+
+    - name: Allow inbound connections from ansible-ig-postgres-tag to ansible-ig-postgres
+      amazon.aws.ec2_group:
+        name: ansible-ig-postgres-tag
+        description: allow postgres connections
+        vpc_id: "{{ vpc.vpc.id }}"
+        region: us-east-1
+        rules:
+          - proto: tcp
+            ports: 5432
+            group_name: ansible-ig-postgres
+        purge_rules: false
+        rules_egress:
+          - proto: tcp
+            ports: 5432
+            group_name: ansible-ig-postgres
+        purge_rules_egress: false
+      register: ansible_ig_postgres_tag_security_group
+
+    # - name: Allow outbound connections from ansible-ig-postgres-tag to ansible-ig-postgres
+    #   amazon.aws.ec2_group:
+    #     name: ansible-ig-postgres-tag
+    #     description: allow postgres connections
+    #     vpc_id: "{{ vpc.vpc.id }}"
+    #     region: us-east-1
+    #     rules_egress:
+    #       - proto: tcp
+    #         ports: 5432
+    #         group_name: ansible-ig-postgres
+    #     purge_rules_egress: false
+    #   register: ansible_ig_postgres_tag_security_group
