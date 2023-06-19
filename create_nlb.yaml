@@ -26,6 +26,9 @@
                 TargetGroupName: ansible-nginx-servers
           - Protocol: TLS
             Port: 443
+            Certificates:
+              - CertificateArn: arn:aws:acm:us-east-1:832133297976:certificate/69e899cf-8fa4-48fa-8a29-ec1c9e31b80b
+            SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
             DefaultActions:
               - Type: forward
                 TargetGroupName: ansible-nginx-servers
@@ -33,9 +36,3 @@
         subnets:
           - "{{ public_subnet_1.subnet.id }}"
           - "{{ public_subnet_2.subnet.id }}"
-
-    - name: Output details
-      debug:
-        msg:
-          - "LoadBalancerARN: {{ nlb.arn }}"
-          - "DNSName: {{ nlb.dns_name }}"
