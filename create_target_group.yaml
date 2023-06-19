@@ -1,0 +1,15 @@
+---
+- name: Create target group
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: Create target group
+      community.aws.elb_target_group:
+        name: ansible-nginx-servers
+        protocol: TCP
+        port: 80
+        vpc_id: "{{ vpc.vpc.id }}"
+        region: us-east-1
+        state: present
+      register: target_group
