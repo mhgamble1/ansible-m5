@@ -12,6 +12,8 @@
         vpc_zone_identifier:
           - "{{ public_subnet_1.subnet.id }}"
           - "{{ public_subnet_2.subnet.id }}"
+        target_group_arns:
+          - "{{ target_group.target_group_arn }}"
         min_size: 2
         max_size: 4
         desired_capacity: 2
