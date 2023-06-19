@@ -14,7 +14,7 @@
           Name: ansible-ig-nlb
         region: us-east-1
       register: nlb
-    - debug: var=nlb
+    # - debug: var=nlb
     - name: Add listener
       community.aws.elb_network_lb:
         name: "{{ nlb.tags.Name }}"

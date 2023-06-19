@@ -1,0 +1,17 @@
+---
+- name: Update ASG with target group
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - debug: var=target_group
+    - name: Update ASG with target group
+      community.aws.autoscaling_group:
+        name: ansible-nginx-servers
+        target_group_arns:
+          - "{{ target_group.target_group_arn }}"
+        region: us-east-1
+        state: present
+      register: asg
+    - debug: var=asg
+  

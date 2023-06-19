@@ -2,6 +2,6 @@
 - import_playbook: create_vpc.yaml
 - import_playbook: create_security_groups.yaml
 - import_playbook: create_launch_template.yaml
-- import_playbook: create_asg.yaml
 - import_playbook: create_target_group.yaml
+- import_playbook: create_asg.yaml
 - import_playbook: create_nlb.yaml
