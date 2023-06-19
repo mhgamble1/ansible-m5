@@ -1,0 +1,41 @@
+---
+- hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Create Ansible NLB
+      community.aws.elb_network_lb:
+        name: ansible-ig-nlb
+        subnets:
+          - "{{ public_subnet_1.subnet.id }}"
+          - "{{ public_subnet_2.subnet.id }}"
+        scheme: internet-facing
+        state: present
+        tags:
+          Name: ansible-ig-nlb
+        region: us-east-1
+      register: nlb
+    - debug: var=nlb
+    - name: Add listener
+      community.aws.elb_network_lb:
+        name: "{{ nlb.tags.Name }}"
+        listeners:
+          - Protocol: TCP
+            Port: 80
+            DefaultActions:
+              - Type: forward
+                TargetGroupName: ansible-nginx-servers
+          - Protocol: TLS
+            Port: 443
+            DefaultActions:
+              - Type: forward
+                TargetGroupName: ansible-nginx-servers
+        state: present
+        subnets:
+          - "{{ public_subnet_1.subnet.id }}"
+          - "{{ public_subnet_2.subnet.id }}"
+
+    - name: Output details
+      debug:
+        msg:
+          - "LoadBalancerARN: {{ nlb.arn }}"
+          - "DNSName: {{ nlb.dns_name }}"
