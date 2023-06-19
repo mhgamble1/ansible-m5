@@ -1,0 +1,25 @@
+---
+- name: Create Launch Template
+  hosts: localhost
+  gather_facts: False
+
+  tasks:
+    - name: Create an ec2 launch template
+      community.aws.ec2_launch_template:
+        name: ansible-ig-launch-template
+        image_id: ami-04a0ae173da5807d3
+        instance_type: t2.micro
+        key_name: 4970
+        security_group_ids:
+          - "{{ ansible_ig_postgres_tag_security_group.group_id }}"
+          - "{{ ansible_nginx_servers_security_group.group_id }}"
+        user_data: "{{ lookup('file', 'UserData.sh') | b64encode }}"
+        tags:
+          key: Name
+          value: ansible-ig-server
+          resource_types:
+            - Instances
+            - Volumes
+        network_interfaces:
+          - associate_public_ip_address: yes
+        disable_api_termination: true
