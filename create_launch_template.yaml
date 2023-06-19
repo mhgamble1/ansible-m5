@@ -10,9 +10,6 @@
         image_id: ami-04a0ae173da5807d3
         instance_type: t2.micro
         key_name: 4970
-        security_group_ids:
-          - "{{ ansible_ig_postgres_tag_security_group.group_id }}"
-          - "{{ ansible_nginx_servers_security_group.group_id }}"
         user_data: "{{ lookup('file', 'UserData.sh') | b64encode }}"
         tags:
           key: Name
@@ -21,5 +18,9 @@
             - Instances
             - Volumes
         network_interfaces:
-          - associate_public_ip_address: yes
+          - device_index: 0
+            associate_public_ip_address: true
+            groups:
+              - "{{ ansible_ig_postgres_tag_security_group.group_id }}"
+              - "{{ ansible_nginx_servers_security_group.group_id }}"
         disable_api_termination: true
