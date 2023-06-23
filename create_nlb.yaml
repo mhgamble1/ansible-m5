@@ -5,19 +5,16 @@
     - name: Create Ansible NLB
       community.aws.elb_network_lb:
         name: ansible-ig-nlb
-        subnets:
-          - "{{ public_subnet_1.subnet.id }}"
-          - "{{ public_subnet_2.subnet.id }}"
+        subnet_mappings:
+          - SubnetId: "{{ public_subnet_1.subnet.id }}"
+            AllocationId: eipalloc-01a4163ab2f89b320
+          - SubnetId: "{{ public_subnet_2.subnet.id }}"
+            AllocationId: eipalloc-0fffe66b365a84d22
         scheme: internet-facing
         state: present
         tags:
           Name: ansible-ig-nlb
         region: us-east-1
-      register: nlb
-    # - debug: var=nlb
-    - name: Add listener
-      community.aws.elb_network_lb:
-        name: "{{ nlb.tags.Name }}"
         listeners:
           - Protocol: TCP
             Port: 80
@@ -32,7 +29,4 @@
             DefaultActions:
               - Type: forward
                 TargetGroupName: ansible-nginx-servers
-        state: present
-        subnets:
-          - "{{ public_subnet_1.subnet.id }}"
-          - "{{ public_subnet_2.subnet.id }}"
+      register: nlb
