@@ -14,13 +14,9 @@
         tags:
           key: Name
           value: ansible-ig-server
-          resource_types:
-            - Instances
-            - Volumes
         network_interfaces:
           - device_index: 0
             associate_public_ip_address: true
             groups:
-              - "{{ ansible_ig_postgres_tag_security_group.group_id }}"
               - "{{ ansible_nginx_servers_security_group.group_id }}"
         disable_api_termination: true
