@@ -37,6 +37,8 @@
         rules_egress:
           - proto: all
             cidr_ip: 0.0.0.0/0
+        purge_rules: false
+        purge_rules_egress: false
       register: ansible_ig_postgres_security_group
 
     - name: Create ig-postgres-tag security group
@@ -48,6 +50,8 @@
         rules_egress:
           - proto: all
             cidr_ip: 0.0.0.0/0
+        purge_rules: false
+        purge_rules_egress: false
       register: ansible_ig_postgres_tag
 
     - name: Create ig-nlb-sg security group
