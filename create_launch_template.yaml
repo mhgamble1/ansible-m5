@@ -11,6 +11,7 @@
         instance_type: t2.micro
         key_name: 4970
         user_data: "{{ lookup('file', 'UserData.sh') | b64encode }}"
+        iam_instance_profile: arn:aws:iam::832133297976:instance-profile/s3_and_secrets
         tags:
           key: Name
           value: ansible-ig-server
