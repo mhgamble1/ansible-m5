@@ -20,4 +20,5 @@
             associate_public_ip_address: true
             groups:
               - "{{ ansible_nginx_servers_security_group.group_id }}"
+              - "{{ ansible_ig_postgres_tag_security_group.group_id }}"
         disable_api_termination: false
