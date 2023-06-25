@@ -1,4 +1,4 @@
-CREATE USER image_gallery WITH PASSWORD '{{ config.passwords.image_gallery }}';
+CREATE USER image_gallery WITH PASSWORD '{{ lookup('file', 'config.yaml') | from_yaml['passwords']['db_password'] }}';
 GRANT image_gallery TO postgres;
 CREATE DATABASE image_gallery OWNER image_gallery;
 SET DATABASE image_gallery;
