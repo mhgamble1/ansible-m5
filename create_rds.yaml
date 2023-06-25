@@ -6,7 +6,7 @@
       include_vars:
         file: "config.yaml"
         name: config
-        
+
     - name: Create RDS instance
       community.aws.rds_instance:
         region: us-east-1
@@ -15,7 +15,7 @@
         engine_version: 14.7
         instance_type: db.t3.micro
         username: postgres
-        password: "{{ config.passwords.rds_password }}"
+        password: "{{ config.passwords.postgres }}"
         allocated_storage: 20
         vpc_security_group_ids: sg-08d22241b45b927ce
         db_subnet_group_name: ansible-ig-private-dbgrp

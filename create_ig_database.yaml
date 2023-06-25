@@ -6,10 +6,10 @@
       include_vars:
         file: "config.yaml"
         name: config
-        
+
     - name: Run SQL commands
       postgresql_query:
         login_host: "{{ rds_info.instances[0].endpoint.address }}"
-        login_password: "{{ config.passwords.rds_password }}"
+        login_password: "{{ config.passwords.postgres }}"
         login_user: "postgres"
         query: "{{ lookup('file', 'create_db.sql') }}"
