@@ -4,8 +4,8 @@
   tasks:
 
     - name: Run SQL commands
-      community.postgresql.postgresql_query:
+      community.postgresql.postgresql_script:
         login_host: "{{ rds_info.instances[0].endpoint.address }}"
         login_password: spacer55
         login_user: postgres
-        path_to_script: create_db.sql
+        path: create_db.sql
