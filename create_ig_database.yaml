@@ -18,7 +18,7 @@
     - name: Create image_gallery database
       postgresql_db:
         login_host: "{{ rds_info.instances[0].endpoint.address }}"
-        login_password: "{{ config.passwords.postgres }}"
+        login_password: "{{ config.passwords.image_gallery }}"
         login_user: "postgres"
         name: image_gallery
         owner: image_gallery
