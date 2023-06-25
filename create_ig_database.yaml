@@ -6,6 +6,6 @@
     - name: Run SQL commands
       community.postgresql.postgresql_query:
         login_host: "{{ rds_info.instances[0].endpoint.address }}"
-        login_password: "spacer55"
-        login_user: "postgres"
-        query: "{{ lookup('file', 'create_db.sql') }}"
+        login_password: spacer55
+        login_user: postgres
+        path_to_script: create_db.sql
