@@ -2,6 +2,11 @@
 - hosts: localhost
   gather_facts: False
   tasks:
+    - name: Include variables from the config file
+      include_vars:
+        file: "config.yaml"
+        name: config
+        
     - name: Create RDS instance
       community.aws.rds_instance:
         region: us-east-1

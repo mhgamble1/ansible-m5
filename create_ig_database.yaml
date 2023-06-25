@@ -2,7 +2,11 @@
 - hosts: localhost
   gather_facts: false
   tasks:
-
+    - name: Include variables from the config file
+      include_vars:
+        file: "config.yaml"
+        name: config
+        
     - name: Run SQL commands
       postgresql_query:
         login_host: "{{ rds_info.instances[0].endpoint.address }}"
