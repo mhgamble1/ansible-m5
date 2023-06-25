@@ -15,21 +15,21 @@
         name: image_gallery
         password: "{{ config.passwords.image_gallery }}"
 
-    - name: Set postgres to have image_gallery role
-      postgresql_query:
-        db: postgres
-        login_host: "{{ rds_info.instances[0].endpoint.address }}"
-        login_password: "{{ config.passwords.postgres }}"
-        login_user: "postgres"
-        query: "ALTER ROLE postgres WITH SUPERUSER NOINHERIT;"
-
     - name: Create image_gallery database
       postgresql_db:
         login_host: "{{ rds_info.instances[0].endpoint.address }}"
         login_password: "{{ config.passwords.postgres }}"
         login_user: "postgres"
         name: image_gallery
-        owner: image_gallery
+        owner: postgres
+
+    - name: Change the owner of the database to image_gallery
+      postgresql_query:
+        db: image_gallery
+        login_host: "{{ rds_info.instances[0].endpoint.address }}"
+        login_password: "{{ config.passwords.postgres }}"
+        login_user: "postgres"
+        query: "ALTER DATABASE image_gallery OWNER TO image_gallery;"
 
     - name: Set up image_gallery database
       postgresql_query:
