@@ -1,0 +1,32 @@
+---
+- hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Create RDS instance
+      community.aws.rds_instance:
+        region: us-east-1
+        db_instance_identifier: ansible-image-gallery
+        engine: postgres
+        engine_version: 14.7
+        instance_type: db.t3.micro
+        username: postgres
+        password: spacer55
+        allocated_storage: 20
+        vpc_security_group_ids: sg-08d22241b45b927ce
+        db_subnet_group_name: ansible-ig-private-dbgrp
+        availability_zone: us-east-1a
+        backup_retention_period: 7
+        preferred_backup_window: "10:26-10:56"
+        preferred_maintenance_window: "mon:08:33-mon:09:03"
+        # multi_az: no
+        auto_minor_version_upgrade: yes
+        publicly_accessible: no
+        storage_type: "gp2"
+        storage_encrypted: true
+        kms_key_id: "arn:aws:kms:us-east-1:832133297976:key/8a21fe5a-6434-4f01-8b3c-22c9fa112053"
+        license_model: "postgresql-license"
+        # performance_insights_enabled: yes
+        # performance_insights_retention_period: 7
+        # tags: {}
+        state: present
+    
