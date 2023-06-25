@@ -6,6 +6,6 @@
     - name: Run SQL commands
       postgresql_query:
         login_host: "{{ rds_info.instances[0].endpoint.address }}"
-        login_password: "{{ lookup('file', 'config.yaml') | from_yaml['passwords']['rds_password'] }}"
+        login_password: "{{ config.passwords.rds_password }}"
         login_user: "postgres"
         query: "{{ lookup('file', 'create_db.sql') }}"
