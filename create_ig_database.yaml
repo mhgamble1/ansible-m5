@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Wait for RDS instance to become available
+      community.aws.rds_instance_info:
+        db_instance_identifier: ansible-image-gallery
+        region: us-east-1
+      register: rds_info
+      until: rds_info.instances[0].db_instance_status == 'available'
+      retries: 30
+      delay: 60
+    
+    - debug: var=rds_info.instances[0].endpoint.address
+
+    - name: Run SQL commands
+      postgresql_query:
+        login_host: "{{ rds_info.instances[0].endpoint.address }}"
+        login_password: "spacer55"
+        login_user: "postgres"
+        query: "{{ lookup('file', 'create_db.sql') }}"
