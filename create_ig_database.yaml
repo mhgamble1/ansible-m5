@@ -7,21 +7,28 @@
         file: "config.yaml"
         name: config
 
-    - name: Run SQL commands
+    - name: Create image_gallery user and database
       postgresql_query:
         login_host: "{{ rds_info.instances[0].endpoint.address }}"
         login_password: "{{ config.passwords.postgres }}"
         login_user: "postgres"
         query:
-          CREATE USER image_gallery WITH PASSWORD '{{ config.passwords.image_gallery }}';
-          GRANT image_gallery TO postgres;
-          CREATE DATABASE image_gallery OWNER image_gallery;
-          SET DATABASE image_gallery;
-          CREATE TABLE users (
-            username VARCHAR(100) NOT NULL,
-            password VARCHAR(100),
-            full_name VARCHAR(200)
-          );
-          GRANT SELECT, INSERT, UPDATE, DELETE ON users TO image_gallery;
-          GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO image_gallery;
-          ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO image_gallery;
+          - CREATE USER image_gallery WITH PASSWORD '{{ config.passwords.image_gallery }}';
+          - GRANT image_gallery TO postgres;
+          - CREATE DATABASE image_gallery OWNER image_gallery;
+
+    - name: Set up image_gallery database
+      postgresql_query:
+        db: image_gallery
+        login_host: "{{ rds_info.instances[0].endpoint.address }}"
+        login_password: "{{ config.passwords.postgres }}"
+        login_user: "postgres"
+        query:
+          - CREATE TABLE users (
+              username VARCHAR(100) NOT NULL,
+              password VARCHAR(100),
+              full_name VARCHAR(200)
+            );
+          - GRANT SELECT, INSERT, UPDATE, DELETE ON users TO image_gallery;
+          - GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO image_gallery;
+          - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO image_gallery;
