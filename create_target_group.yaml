@@ -14,6 +14,6 @@
         state: present
       register: target_group
 
-    - name: Pause for target group to become ready. Note for grader - For some reason I wasn't able to diagnose in time there seems to be an issue with the ec2 instances from my ASG not registering with the target group. I've tried a few different things but I'm not sure what the issue is. I've included this pause as a workaround to allow the target group to become ready before the ASG is created.
+    - name: Pause for target group to become ready. Note for grader - there seems to be an issue with the ec2 instances from my ASG not registering with the target group. I've included this pause as a workaround to allow the target group to become ready before the ASG is created. This seems to fix the issue.
       ansible.builtin.pause:
         minutes: 2
