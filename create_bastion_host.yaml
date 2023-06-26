@@ -25,6 +25,8 @@
           #!/bin/bash
           yum install -y python3 pip git postgresql15 postgresql-devel gcc python3-devel
 
+          sudo chmod u+w /home/ec2-user
+
           cat >/home/ec2-user/image_gallery.sql <<EOL
           CREATE USER image_gallery WITH PASSWORD '{{ config.passwords.image_gallery }}';
           GRANT image_gallery TO postgres;
@@ -40,6 +42,6 @@
           ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO image_gallery;
           EOL
 
-          PGPASSWORD='{{ config.passwords.postgres }}' psql -h {{ rds_info.instances[0].endpoint.address }} -U postgres -f image_gallery.sql
+          PGPASSWORD='{{ config.passwords.postgres }}' psql -h {{ rds_info.instances[0].endpoint.address }} -U postgres -f /home/ec2-user/image_gallery.sql
         state: present
       register: bastion_host
