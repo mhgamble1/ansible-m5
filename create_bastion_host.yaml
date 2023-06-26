@@ -25,8 +25,7 @@
           #!/bin/bash
           yum install -y python3 pip git postgresql15 postgresql-devel gcc python3-devel
 
-          cd ~
-          cat >image_gallery.sql <<EOL
+          cat >/home/ec2-user/image_gallery.sql <<EOL
           CREATE USER image_gallery WITH PASSWORD '{{ config.passwords.image_gallery }}';
           GRANT image_gallery TO postgres;
           CREATE DATABASE image_gallery OWNER image_gallery;
