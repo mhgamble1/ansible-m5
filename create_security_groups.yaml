@@ -105,3 +105,16 @@
             group_name: ansible-ig-postgres
         purge_rules_egress: false
       register: ansible_ig_postgres_tag_security_group
+
+    - name: Allow ssh to bastion host
+      amazon.aws.ec2_group:
+        name: ansible-bastion-host
+        description: allow ssh to bastion host
+        vpc_id: "{{ vpc.vpc.id }}"
+        region: us-east-1
+        rules:
+          - proto: tcp
+            ports: 22
+            cidr_ip: 0.0.0.0/0
+        purge_rules: false
+      register: ansible_bastion_host_security_group
