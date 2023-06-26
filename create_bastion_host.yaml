@@ -3,6 +3,11 @@
   hosts: localhost
   gather_facts: False
   tasks:
+    - name: Include variables from the config file
+      include_vars:
+        file: "config.yaml"
+        name: config
+
     - name: Create a bastion host instance with a public IP address
       amazon.aws.ec2_instance:
         region: us-east-1
@@ -16,6 +21,28 @@
         network:
           assign_public_ip: true
         image_id: ami-04a0ae173da5807d3
+        user_data: |
+          "#!/bin/bash
+          yum install -y python3 pip git postgresql15 postgresql-devel gcc python3-devel
+
+          cd ~
+          cat >image_gallery.sql <<EOL
+          CREATE USER image_gallery WITH PASSWORD '{{ config.passwords.image_gallery }}';
+          GRANT image_gallery TO postgres;
+          CREATE DATABASE image_gallery OWNER image_gallery;
+          \c image_gallery;
+          CREATE TABLE users (
+            username VARCHAR(100) NOT NULL,
+            password VARCHAR(100),
+            full_name VARCHAR(200)
+          );
+          GRANT SELECT, INSERT, UPDATE, DELETE ON users TO image_gallery;
+          GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO image_gallery;
+          ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO image_gallery;
+          EOL
+
+          PGPASSWORD='{{ config.passwords.postgres }}' psql -h {{ rds_info.instances[0].endpoint.address }} -U postgres -f image_gallery.sql
+          "
         state: present
       register: bastion_host
 
