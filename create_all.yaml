@@ -6,4 +6,5 @@
 - import_playbook: create_asg.yaml
 - import_playbook: create_nlb.yaml
 - import_playbook: create_rds.yaml
+- import_playbook: create_bastion_host.yaml
 - import_playbook: create_ig_database.yaml

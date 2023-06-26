@@ -1,0 +1,30 @@
+---
+- name: Create bastion host
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Create a bastion host instance with a public IP address
+      amazon.aws.ec2_instance:
+        region: us-east-1
+        key_name: 4970
+        name: "bastion-host"
+        vpc_subnet_id: "{{ public_subnet_1.subnet.id }}"
+        instance_type: t2.micro
+        security_groups:
+          - "{{ ansible_ig_postgres_tag_security_group.group_id }}"
+          - "{{ ansible_bastion_host_security_group.group_id }}"
+        network:
+          assign_public_ip: true
+        image_id: ami-04a0ae173da5807d3
+        state: present
+      register: bastion_host
+
+    - name: Wait for bastion host to become available
+      community.aws.ec2_instance_info:
+        region: us-east-1
+        filters:
+          "tag:Name": "bastion-host"
+      register: bastion_host_info
+      until: bastion_host_info.instances[0].state.name == 'running'
+      retries: 30
+      delay: 60
