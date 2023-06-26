@@ -69,7 +69,7 @@
         subnets:
           - "{{ public_subnet_1.subnet.id }}"
           - "{{ public_subnet_2.subnet.id }}"
-        routes: 
+        routes:
           - dest: 0.0.0.0/0
             gateway_id: "{{ igw.gateway_id }}"
     - name: Create NAT gateway
@@ -93,4 +93,3 @@
             cidr_ip: 0.0.0.0/0
             rule_desc: allow all to ports 22 and 80
         state: present
-

@@ -2,7 +2,7 @@
 - name: Create Auto Scaling Group
   hosts: localhost
   gather_facts: False
-  tasks: 
+  tasks:
     - name: Create Auto Scaling Group
       amazon.aws.ec2_asg:
         name: Ansible-ASG
