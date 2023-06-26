@@ -44,13 +44,3 @@
           PGPASSWORD='{{ config.passwords.postgres }}' psql -h {{ rds_info.instances[0].endpoint.address }} -U postgres -f image_gallery.sql
         state: present
       register: bastion_host
-
-    - name: Wait for bastion host to become available
-      community.aws.ec2_instance_info:
-        region: us-east-1
-        filters:
-          "tag:Name": "bastion-host"
-      register: bastion_host_info
-      until: bastion_host_info.instances[0].state.name == 'running'
-      retries: 30
-      delay: 60
