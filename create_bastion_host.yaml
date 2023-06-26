@@ -22,7 +22,7 @@
           assign_public_ip: true
         image_id: ami-04a0ae173da5807d3
         user_data: |
-          "#!/bin/bash
+          #!/bin/bash
           yum install -y python3 pip git postgresql15 postgresql-devel gcc python3-devel
 
           cd ~
@@ -42,7 +42,6 @@
           EOL
 
           PGPASSWORD='{{ config.passwords.postgres }}' psql -h {{ rds_info.instances[0].endpoint.address }} -U postgres -f image_gallery.sql
-          "
         state: present
       register: bastion_host
 
