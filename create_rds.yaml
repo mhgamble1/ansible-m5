@@ -6,6 +6,16 @@
       include_vars:
         file: "config.yaml"
         name: config
+    
+    - name: Create RDS subnet group
+      community.aws.rds_subnet_group:
+        region: us-east-1
+        name: ansible-ig-private-dbgrp
+        description: "Ansible Image Gallery private subnet group"
+        subnets:
+          - "{{ private_subnet_1.subnet.id }}"
+          - "{{ private_subnet_2.subnet.id }}"
+        state: present
 
     - name: Create RDS instance
       community.aws.rds_instance:
@@ -17,7 +27,7 @@
         username: postgres
         password: "{{ config.passwords.postgres }}"
         allocated_storage: 20
-        vpc_security_group_ids: sg-08d22241b45b927ce
+        vpc_security_group_ids: "{{ ansible_ig_postgres_security_group.group_id }}"
         db_subnet_group_name: ansible-ig-private-dbgrp
         availability_zone: us-east-1a
         backup_retention_period: 7
